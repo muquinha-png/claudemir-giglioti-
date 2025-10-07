@@ -1,1 +1,405 @@
-<p>claudemir giglioti</p>
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Página Aleatória — Gerador</title>
+  <style>
+    :root{
+      --bg:#0f1724;
+      --card:#0b1220;
+      --accent:#7c3aed;
+      --glass: rgba(255,255,255,0.03);
+      --text:#e6eef8;
+      --muted: #9fb0c8;
+      --radius:12px;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family: Inter, "Helvetica Neue", Arial, sans-serif;
+      background:
+        radial-gradient(800px 400px at 10% 10%, rgba(124,58,237,0.12), transparent 8%),
+        radial-gradient(700px 300px at 90% 90%, rgba(16,185,129,0.06), transparent 8%),
+        var(--bg);
+      color:var(--text);
+      -webkit-font-smoothing:antialiased;
+      min-height:100vh;
+      display:flex;
+      flex-direction:column;
+      gap:20px;
+      padding:28px;
+    }
+
+    header{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:16px;
+    }
+    .brand{
+      display:flex;
+      gap:12px;
+      align-items:center;
+    }
+    .logo{
+      width:52px;
+      height:52px;
+      border-radius:10px;
+      background:linear-gradient(135deg,var(--accent),#06b6d4);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      font-weight:700;
+      box-shadow:0 6px 18px rgba(0,0,0,0.55);
+    }
+    h1{font-size:1.2rem; margin:0}
+    p.lead{margin:0; color:var(--muted); font-size:0.95rem}
+
+    .controls{
+      display:flex;
+      gap:10px;
+      align-items:center;
+    }
+    button, .input {
+      background:var(--glass);
+      border:1px solid rgba(255,255,255,0.04);
+      color:var(--text);
+      padding:10px 14px;
+      border-radius:12px;
+      cursor:pointer;
+      font-weight:600;
+      backdrop-filter: blur(6px);
+    }
+    button:hover{transform:translateY(-3px);transition:transform .16s}
+    .btn-primary{
+      background:linear-gradient(90deg,var(--accent),#06b6d4);
+      border:0;
+      color:white;
+      box-shadow: 0 8px 30px rgba(124,58,237,0.18);
+    }
+
+    main{
+      display:grid;
+      grid-template-columns: 1fr 320px;
+      gap:18px;
+      align-items:start;
+    }
+    .board{
+      background: linear-gradient(180deg, rgba(255,255,255,0.02), transparent);
+      padding:18px;
+      border-radius:14px;
+      border:1px solid rgba(255,255,255,0.03);
+      min-height:420px;
+    }
+
+    .grid{
+      display:grid;
+      grid-template-columns: repeat(auto-fill, minmax(240px,1fr));
+      gap:14px;
+    }
+
+    .card{
+      background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+      padding:14px;
+      border-radius:12px;
+      overflow:hidden;
+      border:1px solid rgba(255,255,255,0.03);
+      display:flex;
+      flex-direction:column;
+      gap:10px;
+      transition:transform .22s, box-shadow .22s;
+      cursor:default;
+    }
+    .card:hover{transform:translateY(-6px); box-shadow:0 18px 40px rgba(2,6,23,0.6)}
+    .swatch{
+      width:100%;
+      height:88px;
+      border-radius:8px;
+      flex-shrink:0;
+      display:flex;
+      align-items:flex-end;
+      padding:8px;
+      color:white;
+      font-weight:700;
+      text-shadow: 0 4px 18px rgba(0,0,0,0.45);
+    }
+    .meta{display:flex; justify-content:space-between; align-items:center; gap:8px; font-size:0.9rem; color:var(--muted)}
+    .desc{font-size:0.95rem; color: #dfeefe; line-height:1.3}
+
+    aside{
+      display:flex;
+      flex-direction:column;
+      gap:12px;
+    }
+    .panel{
+      background: linear-gradient(180deg, rgba(255,255,255,0.02), transparent);
+      padding:12px;
+      border-radius:12px;
+      border:1px solid rgba(255,255,255,0.03);
+    }
+    label{display:block; font-size:0.85rem; color:var(--muted); margin-bottom:6px}
+    .range{
+      width:100%;
+      appearance:none;
+      height:8px;
+      border-radius:999px;
+      background:linear-gradient(90deg,#7c3aed,#06b6d4);
+      outline:none;
+    }
+
+    footer{
+      margin-top:auto;
+      color:var(--muted);
+      text-align:center;
+      font-size:0.9rem;
+    }
+
+    /* small screens */
+    @media (max-width:880px){
+      main{grid-template-columns:1fr; padding-bottom:8px}
+      .logo{width:44px;height:44px}
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="brand">
+      <div class="logo">RA</div>
+      <div>
+        <h1>Página Aleatória</h1>
+        <p class="lead">Gerador de cards, cores e ideias — tudo aleatório.</p>
+      </div>
+    </div>
+
+    <div class="controls">
+      <button id="shuffleBtn" class="btn-primary">Embaralhar</button>
+      <div class="input" title="Número de cards">
+        <label style="font-size:0.75rem;color:var(--muted);margin-bottom:4px">Cards</label>
+        <input id="countInput" type="number" min="1" max="24" value="8" style="background:transparent;border:0;color:var(--text);width:56px;font-weight:700;text-align:center">
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <section class="board">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+        <strong>Galeria Aleatória</strong>
+        <small style="color:var(--muted)">Clique em um card para copiar o texto</small>
+      </div>
+
+      <div id="grid" class="grid" aria-live="polite">
+        <!-- cards gerados por JS -->
+      </div>
+    </section>
+
+    <aside>
+      <div class="panel">
+        <label for="themeSelect">Tema rápido</label>
+        <select id="themeSelect" class="input" style="width:100%;background:var(--glass);border-radius:10px">
+          <option value="all">Aleatório</option>
+          <option value="tech">Tech</option>
+          <option value="nature">Natureza</option>
+          <option value="food">Comida</option>
+          <option value="fantasy">Fantasia</option>
+        </select>
+      </div>
+
+      <div class="panel">
+        <label for="titleSeed">Semente de título (opcional)</label>
+        <input id="titleSeed" class="input" placeholder="ex: Projeto X" style="width:100%">
+      </div>
+
+      <div class="panel">
+        <label>Quantidade</label>
+        <input id="range" class="range" type="range" min="1" max="24" value="8">
+        <div style="display:flex;justify-content:space-between;color:var(--muted);font-size:0.85rem;margin-top:6px">
+          <span>1</span><span id="rangeVal">8</span><span>24</span>
+        </div>
+      </div>
+
+      <div class="panel" style="text-align:center">
+        <button id="downloadBtn" class="input" title="Baixar JSON">Baixar JSON</button>
+        <div style="font-size:0.8rem;color:var(--muted);margin-top:8px">Exporta os cards gerados</div>
+      </div>
+    </aside>
+  </main>
+
+  <footer>
+    Gerador aleatório • feito com JS — copie e brinque!
+  </footer>
+
+  <script>
+    // Dados base para gerar conteúdo
+    const WORD_BANK = {
+      tech: ["API","microserviço","deploy","frontend","backend","automação","container","integração","IA","dados"],
+      nature: ["floresta","rio","montanha","oceano","cachoeira","folhagem","pássaro","lua","sol","vales"],
+      food: ["pizza","risoto","sushi","torta","smoothie","churrasco","ceviche","bolo","curry","salada"],
+      fantasy: ["dragão","castelo","feitiço","espada","mago","golem","portal","elfo","artefato","lenda"]
+    };
+
+    const ADJECTIVES = ["Brilhante","Rápido","Curioso","Misterioso","Vibrante","Ágil","Sereno","Elétrico","Antigo","Fresco"];
+
+    const DESCRIPTIONS = [
+      "uma ideia simples com grande potencial.",
+      "um protótipo experimental para testar hipóteses.",
+      "uma coleção de pequenos experimentos visuais.",
+      "um projeto que nasceu de uma brincadeira.",
+      "um conceito pensado para aprender e criar.",
+      "uma peça que mistura estética e função.",
+      "um experimento iterativo e divertido.",
+      "um rascunho pronto para ser melhorado."
+    ];
+
+    // utilitários
+    const rand = (arr) => arr[Math.floor(Math.random()*arr.length)];
+    const randomInt = (min,max) => Math.floor(Math.random()*(max-min+1))+min;
+    const toCamel = s => s.replace(/\s+/g,'-').toLowerCase();
+
+    // DOM
+    const grid = document.getElementById('grid');
+    const shuffleBtn = document.getElementById('shuffleBtn');
+    const range = document.getElementById('range');
+    const rangeVal = document.getElementById('rangeVal');
+    const countInput = document.getElementById('countInput');
+    const themeSelect = document.getElementById('themeSelect');
+    const titleSeed = document.getElementById('titleSeed');
+    const downloadBtn = document.getElementById('downloadBtn');
+
+    function pickPalette(seed = '') {
+      // gera uma cor base a partir do seed
+      const h = (seed.split('').reduce((s,c)=>s+c.charCodeAt(0),0) % 360) || randomInt(0,359);
+      const sat = randomInt(60,86);
+      const light = randomInt(45,68);
+      return `linear-gradient(135deg,hsl(${h}deg ${sat}% ${light}%), hsl(${(h+45)%360}deg ${Math.max(50,sat-10)}% ${Math.max(40,light-8)}%))`;
+    }
+
+    function generateCard(index, theme) {
+      const topics = (theme && theme !== 'all') ? WORD_BANK[theme] : Object.values(WORD_BANK).flat();
+      const titleWords = [];
+      // use seed if provided
+      const seed = titleSeed.value.trim();
+      if(seed){
+        titleWords.push(seed.split(' ').slice(0,2).join(' '));
+      }
+      titleWords.push(rand(ADJECTIVES));
+      titleWords.push(rand(topics));
+      const title = titleWords.join(' ');
+      const desc = rand(DESCRIPTIONS);
+      const palette = pickPalette(title + index);
+      const id = 'card-' + toCamel(title) + '-' + index;
+      return { id, title, desc, palette };
+    }
+
+    function render(count = 8, theme = 'all') {
+      grid.innerHTML = '';
+      const items = [];
+      for(let i=0;i<count;i++){
+        const c = generateCard(i, theme);
+        items.push(c);
+
+        const card = document.createElement('article');
+        card.className = 'card';
+        card.id = c.id;
+        card.innerHTML = `
+          <div class="swatch" style="background:${c.palette}">
+            <div style="padding:6px;border-radius:8px; background: rgba(0,0,0,0.12); font-size:0.95rem; width:100%">${c.title}</div>
+          </div>
+          <div class="desc">${c.desc}</div>
+          <div class="meta"><span>#{${i+1}}</span><small>${new Date().toLocaleDateString()}</small></div>
+        `;
+        // copiar título ao clicar
+        card.addEventListener('click', async () => {
+          try {
+            await navigator.clipboard.writeText(`${c.title} — ${c.desc}`);
+            const original = card.style.transform;
+            card.style.transform = 'translateY(-6px) scale(1.02)';
+            setTimeout(()=>card.style.transform = original,220);
+            showToast(`Copiado: ${c.title}`);
+          } catch(e){
+            showToast('Não foi possível copiar (permissão negada)');
+          }
+        });
+
+        grid.appendChild(card);
+      }
+      return items;
+    }
+
+    // toast simples
+    let toastTimer = null;
+    function showToast(txt){
+      const id = '___toast';
+      let t = document.getElementById(id);
+      if(!t){
+        t = document.createElement('div');
+        t.id = id;
+        t.style.position='fixed';
+        t.style.right='18px';
+        t.style.bottom='18px';
+        t.style.padding='12px 16px';
+        t.style.borderRadius='10px';
+        t.style.background='rgba(0,0,0,0.6)';
+        t.style.color='white';
+        t.style.fontWeight='600';
+        t.style.boxShadow='0 10px 28px rgba(2,6,23,0.6)';
+        document.body.appendChild(t);
+      }
+      t.textContent = txt;
+      t.style.opacity = '1';
+      if(toastTimer) clearTimeout(toastTimer);
+      toastTimer = setTimeout(()=>{ t.style.opacity='0'; }, 2200);
+    }
+
+    // controles
+    function refreshFromControls(){
+      const count = parseInt(range.value,10);
+      rangeVal.textContent = count;
+      countInput.value = count;
+      const theme = themeSelect.value;
+      const items = render(count, theme);
+      // store current items for download
+      window._lastItems = items;
+    }
+
+    range.addEventListener('input', refreshFromControls);
+    countInput.addEventListener('change', () => {
+      let v = parseInt(countInput.value,10);
+      if(isNaN(v) || v<1) v = 1;
+      if(v>24) v = 24;
+      range.value = v;
+      refreshFromControls();
+    });
+
+    shuffleBtn.addEventListener('click', () => {
+      // small animation
+      shuffleBtn.disabled = true;
+      shuffleBtn.textContent = 'Gerando...';
+      setTimeout(()=>{
+        refreshFromControls();
+        shuffleBtn.disabled = false;
+        shuffleBtn.textContent = 'Embaralhar';
+      }, 240);
+    });
+
+    themeSelect.addEventListener('change', refreshFromControls);
+    titleSeed.addEventListener('change', refreshFromControls);
+
+    downloadBtn.addEventListener('click', () => {
+      const data = window._lastItems || [];
+      const blob = new Blob([JSON.stringify(data, null, 2)], {type:'application/json'});
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'cards_gerados.json';
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      URL.revokeObjectURL(url);
+    });
+
+    // inicializa
+    refreshFromControls();
+  </script>
+</body>
+</html>
